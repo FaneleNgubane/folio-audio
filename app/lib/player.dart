@@ -40,7 +40,7 @@ class PlayerController extends ChangeNotifier {
     ];
     var idx = b.chapters.indexWhere((c) => c.id == b.progChapter);
     if (idx < 0) idx = 0;
-    await player.setAudioSources(sources,
+    await player.setAudioSource(ConcatenatingAudioSource(children: sources),
         initialIndex: idx, initialPosition: Duration(milliseconds: b.progMs));
     await player.setSpeed(speed);
     if (autoplay) player.play();
