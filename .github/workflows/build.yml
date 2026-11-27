@@ -1,0 +1,46 @@
+name: Build Folio Audio
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+
+jobs:
+  windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with: { channel: stable }
+      - name: Create platform folders and build
+        working-directory: app
+        run: |
+          flutter create --platforms=windows .
+          flutter pub get
+          flutter build windows --release
+      - name: Bundle server next to the app
+        shell: pwsh
+        run: |
+          Copy-Item -Recurse server app/build/windows/x64/runner/Release/server
+          Compress-Archive -Path app/build/windows/x64/runner/Release/* -DestinationPath FolioAudio-Windows.zip
+      - uses: actions/upload-artifact@v4
+        with: { name: FolioAudio-Windows, path: FolioAudio-Windows.zip }
+
+  android:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with: { distribution: temurin, java-version: 17 }
+      - uses: subosito/flutter-action@v2
+        with: { channel: stable }
+      - name: Create platform folders, patch manifest, build
+        working-directory: app
+        run: |
+          flutter create --platforms=android --org com.folio .
+          python3 ../tools/patch_android.py
+          flutter pub get
+          flutter build apk --release
+      - uses: actions/upload-artifact@v4
+        with:
+          name: FolioAudio-Android
+          path: app/build/app/outputs/flutter-apk/app-release.apk

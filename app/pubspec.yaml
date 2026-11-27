@@ -1,0 +1,22 @@
+name: folio_audio
+description: Self-hosted audiobook player for Windows and Android.
+publish_to: none
+version: 0.8.0+8
+
+environment:
+  sdk: ">=3.3.0 <4.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  http: ^1.2.0
+  shared_preferences: ^2.2.0
+  path_provider: ^2.1.0
+  file_picker: ^8.0.0
+  just_audio: ^0.9.38
+  just_audio_background: ^0.0.1-beta.11
+  just_audio_media_kit: ^2.0.4
+  media_kit_libs_windows_audio: ^1.0.9
+
+flutter:
+  uses-material-design: true
